@@ -1,0 +1,46 @@
+body{
+    font-family: Arial;
+    margin: 0;
+    padding: 0;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+#top-bar{
+    display: flex;;
+}
+#title{
+    padding: 30px;
+    color: #4d4b46;
+    text-align: center;
+    font-size: 30px;
+    width: 90%;
+}
+#account-bar{
+    border-left: black solid 2px;
+    width: 10%;
+}
+
+ul{
+    border-top: black solid 1px;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color:#4d4b46;
+    display: flex;
+}
+li{
+    flex: 1;
+}
+li a{
+    padding: 15px;
+    display: block;
+    text-decoration: none;
+    color: white;
+    border-right: solid white 1px;
+    border-left: solid white 1px;
+    text-align: center;
+}
+li a:hover{
+    background-color: teal;
+}

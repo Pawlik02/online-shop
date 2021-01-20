@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static "shop/style.css" %}">
+    </head>
+    <body>
+        <div id="top-bar">
+            <div id="title">
+                Shop
+            </div>
+            <div id="account-bar">
+                {% if user.is_authenticated %}
+                Current user:
+                <br>
+                {{user.username}}
+                <br>
+                <a id="logout" href="{% url "shop:logout_view" %}">Logout</a>
+                <br>
+                <a id="cart" href="{% url "shop:cart" %}">Cart</a>
+                {% else %}
+                <a id="register" href="{% url "shop:register" %}">Register</a>
+                <br>
+                <a id="login" href="{% url "shop:login_view" %}">Login</a>
+                {% endif%}
+            </div>
+        </div>
+        <ul>
+            <li><a href="/">Home page</a></li>
+            <li><a href="/processors">Category 1</a></li>
+            <li><a href="/ram">Category 2</a></li>
+            <li><a href="/motherboards">Category 3</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+        <div id="footer">
+            Footer placeholder
+        </div>
+    </body>
+</html>

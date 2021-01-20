@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        
+    </head>
+    <body>
+        {% for item in cart_items %}
+        {{item.product.name}} {{item.product.price}}zł
+        <a href="{% url "shop:cart_del" item_id=item.id %}">Delete</a>
+        <br>
+        {% endfor %}
+        <a href="{% url "shop:index" %}">Home page</a>
+    </body>
+</html>
