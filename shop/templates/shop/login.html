@@ -7,7 +7,7 @@
         <form method="POST">
             {% csrf_token %}
             {{form}}
-            <input type="submit" name="Submit">
+            <input type="submit">
         </form>
         {{if_error}}
     </body>

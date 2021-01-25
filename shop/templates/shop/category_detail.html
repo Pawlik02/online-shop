@@ -2,7 +2,7 @@
 
 {% block content %}
 {% for product in view.get_products %}
-<a href="{{product.id}}-{{product.slug}}">{{product.name}}--------{{product.price}}zł</a><br>
+<a href="{{product.id}}-{{product.slug}}">{{product.name}}--------{{product.price}} zł</a><br>
 {% endfor %}
 
 {% endblock %}

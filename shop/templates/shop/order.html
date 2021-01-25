@@ -3,13 +3,16 @@
     <head>
         
     </head>
-    
     <body>
+        {% for item in cart_items %}
+        {{item.product.name}} {{item.product.price}}zł | Quantity: {{item.ordered_quantity}}
+        <br>
+        {% endfor %}
         <form method="POST">
             {% csrf_token %}
             {{form}}
             <input type="submit">
         </form>
-        {{if_error}}
+        <a href="{% url "shop:cart" %}">Go back</a>
     </body>
 </html>

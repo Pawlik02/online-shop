@@ -3,6 +3,11 @@
 {% block content %}
 Name: {{view.get_object.name}}
 <br>
-Price: {{view.get_object.price}}
-<a href="{% url "shop:cart_add" product_id=view.get_object.id %}">Add</a>
+Price: {{view.get_object.price}} zł
+<form method="POST">
+    {% csrf_token %}
+    {{form}}
+    <input type="submit">
+</form>
+
 {% endblock %}

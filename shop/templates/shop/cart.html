@@ -7,8 +7,18 @@
         {% for item in cart_items %}
         {{item.product.name}} {{item.product.price}}zł
         <a href="{% url "shop:cart_del" item_id=item.id %}">Delete</a>
+
+        <form action={% url "shop:cart_update" item_id=item.id %} method="POST">
+            {% csrf_token %}
+            <input type="number" name="quantity" value={{item.ordered_quantity}} min="1">
+            <input type="submit" value="Change quantity">
+        </form>
+
         <br>
         {% endfor %}
+        Total price: {{total_price}} zł
+        <a href="{% url "shop:order" %}">Proceed to order</a>
+        <br>
         <a href="{% url "shop:index" %}">Home page</a>
     </body>
 </html>
