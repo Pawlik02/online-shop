@@ -17,7 +17,9 @@
         <br>
         {% endfor %}
         Total price: {{total_price}} zł
+        {% if cart_items %}
         <a href="{% url "shop:order" %}">Proceed to order</a>
+        {% endif %}
         <br>
         <a href="{% url "shop:index" %}">Home page</a>
     </body>

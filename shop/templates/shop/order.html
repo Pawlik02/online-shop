@@ -4,6 +4,8 @@
         
     </head>
     <body>
+        Total price: {{total_price}} zł
+        <br>
         {% for item in cart_items %}
         {{item.product.name}} {{item.product.price}}zł | Quantity: {{item.ordered_quantity}}
         <br>

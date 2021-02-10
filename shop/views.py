@@ -26,7 +26,7 @@ class ProductDetail(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ProductDetail, self).get_context_data(**kwargs)
-        context["form"] = AddToCartForm
+        context["form"] = AddToCartForm(available_quantity=self.get_object().available_quantity)
         return context
 
     def get_object(self):
@@ -42,6 +42,10 @@ class ProductForm(SingleObjectMixin, FormView):
     form_class = AddToCartForm
     model = Product
 
+    def get_form(self):
+        form_class = self.get_form_class()
+        return form_class(self.get_object().available_quantity, **self.get_form_kwargs())
+        
     def form_valid(self, form):
         quantity = form.cleaned_data["quantity"]
         return HttpResponseRedirect(reverse("shop:cart_add", kwargs={"product_id":self.kwargs["id"], "quantity":quantity}))
@@ -113,13 +117,13 @@ def logout_view(request):
 
 @login_required
 def cart(request):
-    cart = Cart.objects.get(profile=get_profile(request))
+    cart = Cart.objects.get(profile=Profile.get_profile_by_request(request), ordered=False)
     cart_items = CartItem.objects.filter(cart=cart)
     return render(request, "shop/cart.html", {"cart_items":cart_items, "total_price":get_total_price(cart_items)})
 
 @login_required
 def cart_add(request, product_id, quantity):
-    cart = Cart.objects.get(profile=get_profile(request))
+    cart = Cart.objects.get(profile=Profile.get_profile_by_request(request), ordered=False)
     product = Product.objects.get(id=product_id)
     if not CartItem.objects.filter(cart=cart, product=product).exists():
         CartItem(cart=cart, product=product, ordered_quantity=quantity).save()
@@ -139,8 +143,12 @@ def cart_update(request, item_id):
 
 @login_required
 def order(request):
-    cart = Cart.objects.get(profile=get_profile(request))
+    profile = Profile.get_profile_by_request(request)
+    cart = Cart.objects.get(profile=profile, ordered=False)
     cart_items = CartItem.objects.filter(cart=cart)
+    total_price = get_total_price(cart_items)
+    if not cart_items:
+        return HttpResponseRedirect(reverse("shop:cart"))
     if request.method == "POST":
         form = OrderForm(request.POST)
         if form.is_valid():
@@ -149,17 +157,31 @@ def order(request):
             address = form.cleaned_data["address"]
             email = form.cleaned_data["email"]
             phone = form.cleaned_data["phone"]
-            return HttpResponseRedirect(reverse("shop:payment"))
+            order = Order(profile=profile, cart=cart, first_name=first_name, last_name=last_name, address=address, email=email, phone=phone)
+            order.save()
+            cart.ordered = True
+            cart.save()
+            new_cart = Cart(profile=profile)
+            new_cart.save()
+            for item in cart_items:
+                item.product.available_quantity -= item.ordered_quantity
+                item.product.save()
+            return HttpResponseRedirect(reverse("shop:summary"))
     else:
         form = OrderForm
-    return render(request, "shop/order.html", {"cart":cart, "cart_items":cart_items, "form":form})
+    return render(request, "shop/order.html", {"cart":cart, "cart_items":cart_items, "form":form, "total_price":total_price})
 
-def payment(request):
-    return render(request, "shop/payment.html")
+@login_required
+def summary(request):
+    orders = Order.objects.all()
+    carts = Cart.objects.filter(profile=Profile.get_profile_by_request(request), ordered=True)
+    total_price = []
+    for i in range(len(carts)):
+        total_price.append(get_total_price(carts[i].cartitem_set.all()))
+    orders = zip(orders, total_price)
+    return render(request, "shop/summary.html", {"orders":orders})
 
-# Custom functions
-def get_profile(view_request):
-    return Profile.objects.get(user=view_request.user.id)
+# Custrom functions
 
 def get_total_price(cart_items):
     total_price = 0

@@ -18,6 +18,8 @@
                 <a id="logout" href="{% url "shop:logout_view" %}">Logout</a>
                 <br>
                 <a id="cart" href="{% url "shop:cart" %}">Cart</a>
+                <br>
+                <a id="summary" href="{% url "shop:summary" %}">Summary</a>
                 {% else %}
                 <a id="register" href="{% url "shop:register" %}">Register</a>
                 <br>

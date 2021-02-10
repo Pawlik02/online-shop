@@ -9,6 +9,9 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(),label="Password", max_length=150)
 
 class AddToCartForm(forms.Form):
+    def __init__(self, available_quantity, *args, **kwargs):
+        super(AddToCartForm, self).__init__(*args, **kwargs)
+        self.fields["quantity"] = forms.DecimalField(label="Quantity", initial=1, min_value=1, max_value=available_quantity)
     quantity = forms.DecimalField(label="Quantity", initial=1, min_value=1)
 
 class OrderForm(forms.Form):

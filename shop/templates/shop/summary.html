@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        
+    </head>
+    <body>
+        {% for order, total_price in orders%}
+        Order id: {{order.id}} Status: {{order.get_status_display}}
+        <br>
+        {% for item in order.cart.cartitem_set.all %}
+        {{item.product.name}} | Quantity: {{item.ordered_quantity}}
+        <br>
+        {% endfor %}
+        Total price: {{total_price}} zł
+        <br>
+        <br>
+        {% endfor %}
+        <br>
+        <a href="{% url "shop:index" %}">Home page</a>
+    </body>
+</html>
