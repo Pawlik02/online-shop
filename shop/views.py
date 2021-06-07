@@ -181,7 +181,7 @@ def summary(request):
     orders = zip(orders, total_price)
     return render(request, "shop/summary.html", {"orders":orders})
 
-# Custrom functions
+# Custom functions
 
 def get_total_price(cart_items):
     total_price = 0
